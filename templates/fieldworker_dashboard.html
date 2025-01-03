@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field Worker Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #e8f0fe;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        h2, h3 {
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+        .total-children {
+            font-size: 1.2em;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #e1f5fe;
+            border-left: 5px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Field Worker Dashboard</h2>
+        {% if message %}
+        <div class="message" style="color: red; font-weight: bold;">
+            {{ message }}
+        </div>
+        {% endif %}
+        <div class="total-children">
+            <strong>Total Children Under Your Responsibility:</strong> {{ total_children }}
+        </div>
+
+        <div class="section">
+            <h3>Create a New Child</h3>
+            <form method="post" action="{% url 'app:create_child' %}">
+                {% csrf_token %}
+                <label for="child_name">Child Name:</label>
+                <input type="text" id="child_name" name="child_name" required>
+                
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age" required>
+                
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender" required>
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+                
+                <label for="education">Education:</label>
+                <input type="text" id="education" name="education" required>
+                
+                <label for="field_worker_id">Field Worker ID:</label>
+                <input type="text" id="field_worker_id" name="field_worker_id" required>
+                
+                <button type="submit" class="btn">Create Child</button>
+            </form>
+        </div>
+
+        <div class="section">
+            <h3>Delete Inventory Items</h3>
+            <form method="post" action="{% url 'app:delete_inventory_item' %}">
+                {% csrf_token %}
+                <label for="item_id">Select Inventory Item to Delete:</label>
+                <select id="item_id" name="item_id" required>
+                    <option value="">Select an item</option>
+                    {% for item in inventory %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select>
+
+                
+                <button type="submit" class="btn">Delete Item</button>
+            </form>
+        </div>
+        <a href="{% url 'app:change_password' %}" class="btn btn-primary">Change Password</a>
+
+    </div>
+</body>
+</html>

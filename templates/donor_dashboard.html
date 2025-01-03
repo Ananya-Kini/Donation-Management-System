@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Donor Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #e8f0fe;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Donor Dashboard</h2>
+        
+        <div class="section">
+            <h3>Your Sponsorships</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Child Name</th>
+                        <th>Start Date</th>
+                        <th>Status</th>
+                        <th>Number of Children</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sponsorship in sponsorships %}
+                    <tr>
+                        <td>{{ sponsorship.child_name }}</td>
+                        <td>{{ sponsorship.start_date }}</td>
+                        <td>{{ sponsorship.status }}</td>
+                        <td>{{ forloop.counter }}</td> 
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h3>Sponsor a Child</h3>
+            <form method="post" action="{% url 'app:create_sponsorship' %}">
+                {% csrf_token %}
+                <select name="child_id" required>
+                    <option value="">Select a child</option>
+                    {% for child in available_children %}
+                    <option value="{{ child.child_id }}">{{ child.name }} (Age: {{ child.age }})</option>
+                    {% endfor %}
+                </select>
+                <input type="date" name="start_date" required>
+                <button type="submit" class="btn">Start Sponsorship</button>
+            </form>
+        </div>
+
+        <div class="section">
+            <h3>Donate Clothes</h3>
+            <form method="post" action="{% url 'app:donate_clothes' %}">
+                {% csrf_token %}
+                <label for="clothes_type">Type of Clothes:</label>
+                <select name="clothes_type" id="clothes_type" required>
+                    <option value="">Select type</option>
+                    <option value="T-Shirts">T-Shirts</option>
+                    <option value="Jackets">Jackets</option>
+                    <option value="Pants">Pants</option>
+                    <option value="Shoes">Shoes</option>
+                </select>
+                <label for="quantity">Quantity:</label>
+                <input type="number" name="quantity" id="quantity" min="1" required>
+                <button type="submit" class="btn">Donate Clothes</button>
+            </form>
+        </div>
+        <div class="section">
+            <h3>Your Sponsorship Summary</h3>
+            <p>Total Active Sponsorships: {{ active_count }}</p>
+        </div>
+    </div>
+</body>
+</html>
